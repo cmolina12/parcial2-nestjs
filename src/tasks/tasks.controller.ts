@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task, TaskDocument } from './schemas/task.schema';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { AuthGuard } from '../common/guards/auth.guard';
 
 @Controller('tasks')
 export class TasksController {
@@ -12,6 +13,7 @@ export class TasksController {
     private readonly tasksService: TasksService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() payload: CreateTaskDto) {
     await this.tasksService.validateUser(payload.userId);
